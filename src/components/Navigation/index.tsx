@@ -1,23 +1,31 @@
 import {
   AppBar,
+  Box,
+  Button,
   Divider,
   Drawer,
+  FormControlLabel,
   Hidden,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Switch,
   Toolbar,
   Typography,
   makeStyles,
   useTheme,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
-import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
+// import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import MenuIcon from "@material-ui/icons/Menu"
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
+import RefreshIcon from "@material-ui/icons/Refresh"
 import React from "react"
+import { queryCache } from "react-query"
 import { NavLink } from "react-router-dom"
+import { useSlowDown } from "../../utils/useSlowDown"
 
 const drawerWidth = 240
 
@@ -44,12 +52,16 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  refresh: {
+    textTransform: "initial",
+  },
 }))
 
 export function Navigation() {
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const { slowDown, setSlowDown } = useSlowDown()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -67,11 +79,21 @@ export function Navigation() {
           activeClassName="Mui-selected"
         >
           <ListItemIcon>
+            <RadioButtonUncheckedIcon />
+          </ListItemIcon>
+          <ListItemText primary="Spinner" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          to="/skeleton"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
         </ListItem>
-        <ListItem
+        {/* <ListItem
           component={NavLink}
           to="/shared"
           activeClassName="Mui-selected"
@@ -80,7 +102,7 @@ export function Navigation() {
             <FlipToFrontIcon />
           </ListItemIcon>
           <ListItemText primary="Shared Element Transition" />
-        </ListItem>
+        </ListItem> */}
       </List>
     </div>
   )
@@ -104,6 +126,30 @@ export function Navigation() {
           <Typography variant="h6" noWrap>
             UX Playground
           </Typography>
+          <Box ml="auto" display="flex">
+            <Box mr={1}>
+              <Button
+                className={classes.refresh}
+                color="inherit"
+                startIcon={<RefreshIcon />}
+                onClick={() => {
+                  queryCache.invalidateQueries(true)
+                }}
+              >
+                Refresh
+              </Button>
+            </Box>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={slowDown}
+                  onChange={() => setSlowDown(!slowDown)}
+                  name="slow"
+                />
+              }
+              label="Slow"
+            />
+          </Box>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">

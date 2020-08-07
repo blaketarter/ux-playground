@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function RouteSkeleton() {
+export default function RouteSpinner() {
   const classes = useStyles()
   const { data: users, error, isFetching } = useQueryUsers()
 
@@ -23,12 +23,7 @@ export default function RouteSkeleton() {
           ))}
         </>
       ) : (
-        <DelayedLoader delay={50}>
-          <CardUser isSkeleton />
-          <CardUser isSkeleton />
-          <CardUser isSkeleton />
-          <CardUser isSkeleton />
-        </DelayedLoader>
+        <DelayedLoader />
       )}
     </div>
   )

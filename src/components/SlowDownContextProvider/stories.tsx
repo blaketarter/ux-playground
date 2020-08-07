@@ -1,6 +1,6 @@
 import decoratorCentered from "@storybook/addon-centered"
 import React from "react"
-import { DelayedSpinner } from "."
+import { SlowDownContextProvider } from "."
 
 /**
  * See Storybook Docs: Writing Stories
@@ -8,8 +8,8 @@ import { DelayedSpinner } from "."
  */
 
 export default {
-  title: "DelayedSpinner",
+  title: "SlowDownContextProvider",
   decorators: [decoratorCentered],
 }
 
-export const example = () => <DelayedSpinner />
+export const example = () => <SlowDownContextProvider />

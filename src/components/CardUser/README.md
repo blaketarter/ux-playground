@@ -1,4 +1,4 @@
-# `<DelayedSpinner />`
+# `<CardUser />`
 
 DESCRIPTION_HERE
 
@@ -11,10 +11,10 @@ DESCRIPTION_HERE
 
 ## Example
 
-![DelayedSpinner](../../../.loki/reference/chrome_DelayedSpinner_example.png)
+![CardUser](../../../.loki/reference/chrome_CardUser_example.png)
 
-> Image location: [`.loki/reference/chrome_DelayedSpinner_example.png`](../../../.loki/reference/chrome_DelayedSpinner_example.png)
+> Image location: [`.loki/reference/chrome_CardUser_example.png`](../../../.loki/reference/chrome_CardUser_example.png)
 > 
 > To regenerate: 
 > 1. `npm run test:playground` (skip if running)
-> 1. `npm run test:visual:update -- --storiesFilter="^DelayedSpinner example\$"`
+> 1. `npm run test:visual:update -- --storiesFilter="^CardUser example\$"`
