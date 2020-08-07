@@ -14,8 +14,10 @@ import {
   useTheme,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import MenuIcon from "@material-ui/icons/Menu"
 import React from "react"
+import { NavLink } from "react-router-dom"
 
 const drawerWidth = 240
 
@@ -58,11 +60,26 @@ export function Navigation() {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        <ListItem button selected>
+        <ListItem
+          component={NavLink}
+          exact
+          to="/"
+          activeClassName="Mui-selected"
+        >
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          to="/shared"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
+            <FlipToFrontIcon />
+          </ListItemIcon>
+          <ListItemText primary="Shared Element Transition" />
         </ListItem>
       </List>
     </div>
