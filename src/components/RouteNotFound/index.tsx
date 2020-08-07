@@ -1,5 +1,5 @@
 import React from "react"
 
-export function NotFound() {
+export default function RouteNotFound() {
   return <>Not Found</>
 }

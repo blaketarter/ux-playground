@@ -1,4 +1,4 @@
-# `<NotFound />`
+# `<ScrollToTop />`
 
 DESCRIPTION_HERE
 
@@ -11,10 +11,10 @@ DESCRIPTION_HERE
 
 ## Example
 
-![NotFound](../../../.loki/reference/chrome_NotFound_example.png)
+![ScrollToTop](../../../.loki/reference/chrome_ScrollToTop_example.png)
 
-> Image location: [`.loki/reference/chrome_NotFound_example.png`](../../../.loki/reference/chrome_NotFound_example.png)
+> Image location: [`.loki/reference/chrome_ScrollToTop_example.png`](../../../.loki/reference/chrome_ScrollToTop_example.png)
 > 
 > To regenerate: 
 > 1. `npm run test:playground` (skip if running)
-> 1. `npm run test:visual:update -- --storiesFilter="^NotFound example\$"`
+> 1. `npm run test:visual:update -- --storiesFilter="^ScrollToTop example\$"`

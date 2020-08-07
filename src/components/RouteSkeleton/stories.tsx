@@ -1,6 +1,6 @@
 import decoratorCentered from "@storybook/addon-centered"
 import React from "react"
-import { NotFound } from "."
+import RouteSkeleton from "."
 
 /**
  * See Storybook Docs: Writing Stories
@@ -8,8 +8,8 @@ import { NotFound } from "."
  */
 
 export default {
-  title: "NotFound",
+  title: "RouteSkeleton",
   decorators: [decoratorCentered],
 }
 
-export const example = () => <NotFound />
+export const example = () => <RouteSkeleton />
