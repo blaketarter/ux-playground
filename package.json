@@ -1,0 +1,131 @@
+{
+  "name": "crema-app-web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-scripts": "4.0.0-next.77",
+    "web-vitals": "^0.2.4"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.1",
+    "@cremalab/scripts-web": "0.4.0",
+    "@storybook/addon-actions": "5.3.19",
+    "@storybook/addon-centered": "5.3.19",
+    "@storybook/addon-links": "5.3.19",
+    "@storybook/addons": "5.3.19",
+    "@storybook/cli": "5.3.19",
+    "@storybook/node-logger": "5.3.19",
+    "@storybook/preset-create-react-app": "3.1.4",
+    "@storybook/react": "5.3.19",
+    "@testing-library/jest-dom": "^5.11.2",
+    "@testing-library/react": "10.4.8",
+    "@testing-library/user-event": "^12.1.0",
+    "@types/jest": "26.0.9",
+    "@types/node": "12.12.54",
+    "@types/react": "16.9.44",
+    "@types/react-dom": "16.9.8",
+    "@typescript-eslint/eslint-plugin": "3.8.0",
+    "@typescript-eslint/parser": "3.8.0",
+    "cross-env": "7.0.2",
+    "cypress": "4.12.1",
+    "dependency-cruiser": "9.9.5",
+    "eslint": "7.6.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-config-react-app": "5.2.1",
+    "eslint-plugin-cypress": "2.11.1",
+    "eslint-plugin-flowtype": "5.2.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-react": "7.20.5",
+    "eslint-plugin-react-hooks": "4.0.8",
+    "husky": "4.2.5",
+    "husky-add-issue-tracker": "0.0.9",
+    "loki": "0.24.0",
+    "npm-run-all": "4.1.5",
+    "prettier": "2.0.5",
+    "serve": "11.3.2",
+    "source-map-explorer": "2.4.2",
+    "start-server-and-test": "1.11.2",
+    "typescript": "3.9.7",
+    "wait-on": "5.1.0",
+    "webpack": "4.43.0"
+  },
+  "scripts": {
+    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "start:ci": "cross-env EXTEND_ESLINT=true run-s build static",
+    "build": "cross-env EXTEND_ESLINT=true react-scripts build",
+    "test": "cross-env EXTEND_ESLINT=true react-scripts test --testMatch=[ \"**/?(*.)test.ts?(x)\" ]",
+    "new:component": "cremalab-scripts-web new component",
+    "new:type": "cremalab-scripts-web new type",
+    "new:util": "cremalab-scripts-web new util",
+    "prepush": "npm run test:ci",
+    "static": "serve -s build",
+    "deps:graph": "depcruise --validate --output-type dot -- src | dot -T svg > dependency-graph.svg",
+    "deps:report": "depcruise --validate --output-type err-html --output-to dependency-report.html -- src",
+    "test:ci": "cross-env CI=true run-s test:lint test:deps test:types \"test:unit -- -i\" test:visual:ci test:e2e:ci",
+    "test:deps": "depcruise --validate -- src",
+    "test:e2e": "cypress run",
+    "test:e2e:ci": "cross-env CYPRESS_baseUrl=http://localhost:5000 start-server-and-test start:ci http://localhost:5000 \"cypress run --port 5052\"",
+    "test:lint": "eslint -c ./.eslintrc.js ./src --ext .ts,.tsx",
+    "test:lint:fix": "npm run test:lint -- --fix",
+    "test:playground": "cross-env NODE_ENV=loki BABEL_ENV=development start-storybook -p 9009 -s public",
+    "test:playground:build": "build-storybook",
+    "test:playground:ci": "start-storybook -p 5000 -s public --ci",
+    "test:types": "tsc",
+    "test:unit": "npm run test --",
+    "test:unit:coverage": "npm run test:unit -- --coverage --watchAll=false",
+    "test:unit:coverage:watch": "npm run test:unit:coverage -- --watchAll=true",
+    "test:visual": "cross-env CI=true loki --port 9009 --chromeDockerImage=yukinying/chrome-headless-browser-xl:74.0.3729.28",
+    "test:visual:ci:start": "cross-env CI=true loki --port 5000 --chromeDockerImage=yukinying/chrome-headless-browser-xl:74.0.3729.28",
+    "test:visual:ci": "start-server-and-test test:playground:ci http://localhost:5000 test:visual:ci:start",
+    "test:visual:approve": "npm run test:visual -- approve",
+    "test:visual:update": "npm run test:visual -- update",
+    "test:analyze": "run-s test:analyze:*",
+    "test:analyze:build": "npm run build",
+    "test:analyze:explore": "source-map-explorer build/static/js/main.*",
+    "build-storybook": "build-storybook -s public"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run prepush",
+      "prepare-commit-msg": "husky-add-issue-tracker"
+    }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "!node_modules",
+      "!src/**/?(*.)stories.{ts,tsx}",
+      "!src/index.tsx",
+      "!src/serviceWorker.ts",
+      "!src/**/?(*.)test.{ts,tsx}",
+      "!**/*.d.ts",
+      "src/**/*.{ts,tsx}"
+    ]
+  },
+  "loki": {
+    "requireReference": true,
+    "configurations": {
+      "chrome": {
+        "target": "chrome.docker",
+        "width": 800,
+        "height": 800,
+        "deviceScaleFactor": 1,
+        "mobile": false,
+        "fitWindow": false
+      }
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
