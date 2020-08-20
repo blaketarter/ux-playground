@@ -7,13 +7,13 @@ interface Props {
 }
 
 export function DelayedLoader({ children, delay = 500 }: Props) {
-  const [showSpinner, setShowSpinner] = useState(false)
+  const [showLoader, setShowLoader] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     timeoutRef.current = setTimeout(() => {
       timeoutRef.current = null
-      setShowSpinner(true)
+      setShowLoader(true)
     }, delay)
 
     return () => {
@@ -23,5 +23,5 @@ export function DelayedLoader({ children, delay = 500 }: Props) {
       }
     }
   }, [delay])
-  return showSpinner ? children ? <>{children}</> : <CircularProgress /> : null
+  return showLoader ? children ? <>{children}</> : <CircularProgress /> : null
 }

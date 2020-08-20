@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     maxWidth: 1000,
+    margin: "0 auto",
   },
   media: {
     width: 200,

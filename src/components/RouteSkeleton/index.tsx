@@ -3,6 +3,7 @@ import React from "react"
 import { useQueryUsers } from "../../utils/useQueryUsers"
 import { CardUser } from "../CardUser"
 import { DelayedLoader } from "../DelayedLoader"
+import { ListCardUser } from "../ListCardUser"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,11 +18,7 @@ export default function RouteSkeleton() {
   return (
     <div className={classes.root}>
       {!error && !isFetching ? (
-        <>
-          {users?.map((user) => (
-            <CardUser key={user.id} user={user} />
-          ))}
-        </>
+        <ListCardUser users={users ?? []} />
       ) : (
         <DelayedLoader delay={50}>
           <CardUser isSkeleton />

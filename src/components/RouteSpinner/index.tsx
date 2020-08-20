@@ -1,12 +1,19 @@
 import { makeStyles } from "@material-ui/core"
 import React from "react"
 import { useQueryUsers } from "../../utils/useQueryUsers"
-import { CardUser } from "../CardUser"
 import { DelayedLoader } from "../DelayedLoader"
+import { ListCardUser } from "../ListCardUser"
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    flexGrow: 1,
     background: theme.palette.background.default,
+  },
+  spinnerWrapper: {
+    display: "flex",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 }))
 
@@ -17,13 +24,11 @@ export default function RouteSpinner() {
   return (
     <div className={classes.root}>
       {!error && !isFetching ? (
-        <>
-          {users?.map((user) => (
-            <CardUser key={user.id} user={user} />
-          ))}
-        </>
+        <ListCardUser users={users ?? []} />
       ) : (
-        <DelayedLoader />
+        <div className={classes.spinnerWrapper}>
+          <DelayedLoader />
+        </div>
       )}
     </div>
   )

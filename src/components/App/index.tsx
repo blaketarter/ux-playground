@@ -17,6 +17,8 @@ const drawerWidth = 240
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    height: "100vh",
+    overflow: "hidden",
   },
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
@@ -25,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    display: "flex",
+    flexDirection: "column",
+    overflowY: "auto",
   },
 }))
 
@@ -38,24 +43,26 @@ export function App() {
   return (
     <ReactQueryConfigProvider config={queryConfig}>
       <SlowDownContextProvider>
-        <Router>
-          <div className={classes.root}>
-            <ScrollToTop />
-            <CssBaseline />
-            <Navigation />
-            <main className={classes.content}>
-              <div className={classes.toolbar} />
-              <Suspense fallback={DelayedLoader}>
-                <Switch>
-                  <Route path="/404" component={NotFound} />
-                  <Route>
-                    <Content />
-                  </Route>
-                </Switch>
-              </Suspense>
-            </main>
-          </div>
-        </Router>
+        <Suspense fallback={null}>
+          <Router>
+            <div className={classes.root}>
+              <ScrollToTop />
+              <CssBaseline />
+              <Navigation />
+              <main className={classes.content}>
+                <div className={classes.toolbar} />
+                <Suspense fallback={<DelayedLoader />}>
+                  <Switch>
+                    <Route path="/404" component={NotFound} />
+                    <Route>
+                      <Content />
+                    </Route>
+                  </Switch>
+                </Suspense>
+              </main>
+            </div>
+          </Router>
+        </Suspense>
       </SlowDownContextProvider>
     </ReactQueryConfigProvider>
   )

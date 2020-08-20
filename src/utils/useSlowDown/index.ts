@@ -1,13 +1,26 @@
 import { createContext, useContext } from "react"
 
-export const SlowDownContext = createContext<{
-  slowDown: boolean
-  setSlowDown: (slowDown: boolean) => unknown
-}>({
-  slowDown: false,
+interface SlowDownContextState {
+  slowRequest: boolean
+  slowRequestMinimum: number
+  setSlowRequest: (slowRequest: boolean) => unknown
+  setSlowRequestMinimum: (slowRequestMinimum: number) => unknown
+  slowFetch: typeof fetch
+}
+
+export const defaultSlowDownContextState = {
+  slowRequest: false,
+  slowRequestMinimum: 1000,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setSlowDown: () => {},
-})
+  setSlowRequest: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setSlowRequestMinimum: () => {},
+  slowFetch: fetch,
+}
+
+export const SlowDownContext = createContext<SlowDownContextState>(
+  defaultSlowDownContextState,
+)
 
 export const useSlowDown = () => {
   return useContext(SlowDownContext)

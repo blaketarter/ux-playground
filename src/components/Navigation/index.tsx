@@ -11,6 +11,8 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  MenuItem,
+  Select,
   Switch,
   Toolbar,
   Typography,
@@ -18,14 +20,17 @@ import {
   useTheme,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
-// import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
+import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import MenuIcon from "@material-ui/icons/Menu"
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 import RefreshIcon from "@material-ui/icons/Refresh"
 import React from "react"
 import { queryCache } from "react-query"
 import { NavLink } from "react-router-dom"
-import { useSlowDown } from "../../utils/useSlowDown"
+import {
+  defaultSlowDownContextState,
+  useSlowDown,
+} from "../../utils/useSlowDown"
 
 const drawerWidth = 240
 
@@ -48,7 +53,12 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+    ...theme.mixins.toolbar,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   drawerPaper: {
     width: drawerWidth,
   },
@@ -61,7 +71,12 @@ export function Navigation() {
   const classes = useStyles()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
-  const { slowDown, setSlowDown } = useSlowDown()
+  const {
+    slowRequest,
+    setSlowRequest,
+    slowRequestMinimum,
+    setSlowRequestMinimum,
+  } = useSlowDown()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -69,7 +84,47 @@ export function Navigation() {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}>
+        <Box
+          height="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          px={1}
+          py={1}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                checked={slowRequest}
+                onChange={() => setSlowRequest(!slowRequest)}
+                name="slow"
+              />
+            }
+            label="Slow"
+          />
+          <Select
+            autoWidth={true}
+            fullWidth={true}
+            name="slowRequestMinimum"
+            value={slowRequestMinimum}
+            onChange={(e) => {
+              setSlowRequestMinimum(Number(e.target.value))
+            }}
+          >
+            {[0.1, 0.5, 1, 2, 5].map((multiplier) => {
+              const amount =
+                defaultSlowDownContextState.slowRequestMinimum * multiplier
+
+              return (
+                <MenuItem key={amount} value={amount}>
+                  {amount}ms
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </Box>
+      </div>
       <Divider />
       <List>
         <ListItem
@@ -93,16 +148,17 @@ export function Navigation() {
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
         </ListItem>
-        {/* <ListItem
+        <ListItem
           component={NavLink}
           to="/shared"
           activeClassName="Mui-selected"
+          disabled
         >
           <ListItemIcon>
             <FlipToFrontIcon />
           </ListItemIcon>
           <ListItemText primary="Shared Element Transition" />
-        </ListItem> */}
+        </ListItem>
       </List>
     </div>
   )
@@ -139,16 +195,6 @@ export function Navigation() {
                 Refresh
               </Button>
             </Box>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={slowDown}
-                  onChange={() => setSlowDown(!slowDown)}
-                  name="slow"
-                />
-              }
-              label="Slow"
-            />
           </Box>
         </Toolbar>
       </AppBar>
