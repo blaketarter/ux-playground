@@ -49,7 +49,7 @@ export function App() {
               <ScrollToTop />
               <CssBaseline />
               <Navigation />
-              <main className={classes.content}>
+              <main id="scrollToTop" className={classes.content}>
                 <div className={classes.toolbar} />
                 <Suspense fallback={<DelayedLoader />}>
                   <Switch>

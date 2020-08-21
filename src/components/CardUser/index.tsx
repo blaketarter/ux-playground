@@ -7,13 +7,15 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
-import React, { CSSProperties } from "react"
+import React, { CSSProperties, MouseEvent, forwardRef } from "react"
 import { User } from "../../types/User"
 
 interface Props {
   isSkeleton?: boolean
   user?: User
   style?: CSSProperties
+  onClick?: (event: MouseEvent<HTMLElement>, user?: User) => unknown
+  expanded?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,6 +23,15 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     maxWidth: 1000,
     margin: "0 auto",
+    flexWrap: "wrap",
+    height: "100%",
+    background: theme.palette.grey[100],
+  },
+  background: {
+    background: theme.palette.background.paper,
+    flexGrow: 1,
+    alignSelf: "flex-start",
+    minHeight: 200,
   },
   media: {
     width: 200,
@@ -28,13 +39,24 @@ const useStyles = makeStyles((theme) => ({
     objectFit: "cover",
     background: theme.palette.background.default,
   },
+  code: {
+    // background: theme.palette.grey[100],
+  },
 }))
 
-export function CardUser({ isSkeleton, user, style }: Props) {
+export const CardUser = forwardRef(function (
+  { isSkeleton, user, style, expanded, onClick }: Props,
+  ref,
+) {
   const classes = useStyles()
 
   return (
-    <Box my={3} style={style}>
+    <Box
+      {...({ ref } as any)}
+      my={3}
+      style={style}
+      onClick={onClick ? (e) => onClick(e, user) : undefined}
+    >
       <Card elevation={2} className={classes.root}>
         {isSkeleton ? (
           <Skeleton animation="wave" variant="rect" className={classes.media} />
@@ -47,7 +69,7 @@ export function CardUser({ isSkeleton, user, style }: Props) {
             loading="lazy"
           />
         )}
-        <CardContent>
+        <CardContent className={classes.background}>
           <Typography variant="h4">
             {isSkeleton ? (
               <Skeleton
@@ -104,7 +126,95 @@ export function CardUser({ isSkeleton, user, style }: Props) {
             )}
           </Typography>
         </CardContent>
+        {expanded ? (
+          <Box width="100%" alignSelf="stretch" className={classes.code}>
+            <CardContent>
+              <pre>
+                <Typography component="code">
+                  {isSkeleton ? (
+                    <>
+                      <Skeleton animation="wave" variant="text" width={50} />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 200)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 700)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 700)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 700)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 700)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 300)}
+                      />
+                      <Skeleton
+                        animation="wave"
+                        variant="text"
+                        width={Math.max(150, Math.random() * 200)}
+                      />
+                      <Skeleton animation="wave" variant="text" width={50} />
+                    </>
+                  ) : (
+                    JSON.stringify(user, null, "    ")
+                  )}
+                </Typography>
+              </pre>
+            </CardContent>
+          </Box>
+        ) : null}
       </Card>
     </Box>
   )
-}
+})

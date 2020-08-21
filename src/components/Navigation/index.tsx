@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
   refresh: {
     textTransform: "initial",
   },
+  subtitle: {
+    padding: theme.spacing(2),
+  },
 }))
 
 export function Navigation() {
@@ -128,6 +131,9 @@ export function Navigation() {
       </div>
       <Divider />
       <List>
+        <Typography variant="subtitle2" className={classes.subtitle}>
+          Loading Interactions
+        </Typography>
         <ListItem
           component={NavLink}
           exact
@@ -149,6 +155,12 @@ export function Navigation() {
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
         </ListItem>
+      </List>
+      <Divider />
+      <List>
+        <Typography variant="subtitle2" className={classes.subtitle}>
+          Transition Interactions
+        </Typography>
         <ListItem
           component={NavLink}
           to="/animate"
@@ -157,13 +169,12 @@ export function Navigation() {
           <ListItemIcon>
             <DehazeIcon />
           </ListItemIcon>
-          <ListItemText primary="Animate In" />
+          <ListItemText primary="Staggered Fade In" />
         </ListItem>
         <ListItem
           component={NavLink}
           to="/shared"
           activeClassName="Mui-selected"
-          disabled
         >
           <ListItemIcon>
             <FlipToFrontIcon />

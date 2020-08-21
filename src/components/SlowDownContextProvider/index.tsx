@@ -28,14 +28,22 @@ export function SlowDownContextProvider({ children }: Props) {
 
   const setSlowRequestStored = useCallback(
     (newSlowRequest: boolean) => {
-      sessionStorage.setItem("slowRequest", "" + newSlowRequest)
+      if (newSlowRequest) {
+        sessionStorage.setItem("slowRequest", "" + newSlowRequest)
+      } else {
+        sessionStorage.removeItem("slowRequest")
+      }
       return setSlowRequest(newSlowRequest)
     },
     [setSlowRequest],
   )
   const setSlowRequestMinimumStored = useCallback(
     (newSlowRequestMinimum: number) => {
-      sessionStorage.setItem("slowRequestMinimum", "" + newSlowRequestMinimum)
+      if (newSlowRequestMinimum) {
+        sessionStorage.setItem("slowRequestMinimum", "" + newSlowRequestMinimum)
+      } else {
+        sessionStorage.removeItem("slowRequestMinimum")
+      }
       return setSlowRequestMinimum(newSlowRequestMinimum)
     },
     [setSlowRequestMinimum],
