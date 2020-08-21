@@ -20,6 +20,7 @@ import {
   useTheme,
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
+import DehazeIcon from "@material-ui/icons/Dehaze"
 import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import MenuIcon from "@material-ui/icons/Menu"
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
@@ -147,6 +148,16 @@ export function Navigation() {
             <DashboardIcon />
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          to="/animate"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
+            <DehazeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Animate In" />
         </ListItem>
         <ListItem
           component={NavLink}

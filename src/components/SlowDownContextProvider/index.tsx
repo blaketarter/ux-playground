@@ -9,11 +9,36 @@ interface Props {
 }
 
 export function SlowDownContextProvider({ children }: Props) {
-  const [slowRequest, setSlowRequest] = useState(
-    defaultSlowDownContextState.slowRequest,
+  const [slowRequest, setSlowRequest] = useState(() => {
+    const storedSlowRequest = sessionStorage.getItem("slowRequest")
+
+    return storedSlowRequest
+      ? Boolean(storedSlowRequest)
+      : defaultSlowDownContextState.slowRequest
+  })
+  const [slowRequestMinimum, setSlowRequestMinimum] = useState(() => {
+    const storedSlowRequestMinimum = sessionStorage.getItem(
+      "slowRequestMinimum",
+    )
+
+    return storedSlowRequestMinimum
+      ? Number(storedSlowRequestMinimum)
+      : defaultSlowDownContextState.slowRequestMinimum
+  })
+
+  const setSlowRequestStored = useCallback(
+    (newSlowRequest: boolean) => {
+      sessionStorage.setItem("slowRequest", "" + newSlowRequest)
+      return setSlowRequest(newSlowRequest)
+    },
+    [setSlowRequest],
   )
-  const [slowRequestMinimum, setSlowRequestMinimum] = useState(
-    defaultSlowDownContextState.slowRequestMinimum,
+  const setSlowRequestMinimumStored = useCallback(
+    (newSlowRequestMinimum: number) => {
+      sessionStorage.setItem("slowRequestMinimum", "" + newSlowRequestMinimum)
+      return setSlowRequestMinimum(newSlowRequestMinimum)
+    },
+    [setSlowRequestMinimum],
   )
 
   const slowFetch = useCallback<typeof fetch>(
@@ -40,9 +65,9 @@ export function SlowDownContextProvider({ children }: Props) {
     <SlowDownContext.Provider
       value={{
         slowRequest,
-        setSlowRequest,
+        setSlowRequest: setSlowRequestStored,
         slowRequestMinimum,
-        setSlowRequestMinimum,
+        setSlowRequestMinimum: setSlowRequestMinimumStored,
         slowFetch,
       }}
     >

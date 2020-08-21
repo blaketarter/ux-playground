@@ -7,12 +7,13 @@ import {
   makeStyles,
 } from "@material-ui/core"
 import Skeleton from "@material-ui/lab/Skeleton"
-import React from "react"
+import React, { CSSProperties } from "react"
 import { User } from "../../types/User"
 
 interface Props {
   isSkeleton?: boolean
   user?: User
+  style?: CSSProperties
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -29,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export function CardUser({ isSkeleton, user }: Props) {
+export function CardUser({ isSkeleton, user, style }: Props) {
   const classes = useStyles()
 
   return (
-    <Box my={3}>
+    <Box my={3} style={style}>
       <Card elevation={2} className={classes.root}>
         {isSkeleton ? (
           <Skeleton animation="wave" variant="rect" className={classes.media} />
