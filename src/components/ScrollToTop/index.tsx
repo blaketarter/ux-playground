@@ -1,20 +1,27 @@
-import { useEffect } from "react"
+import { MutableRefObject, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 
-export function ScrollToTop() {
+interface Props {
+  scrollRef?: MutableRefObject<HTMLElement | null>
+}
+
+export function ScrollToTop(props: Props) {
   const history = useHistory()
 
   useEffect(() => {
     const unlisten = history.listen((_, action) => {
       if (action !== "POP") {
-        window.scrollTo(0, 0)
-        document.getElementById("scrollToTop")?.scrollTo(0, 0)
+        if (props.scrollRef?.current) {
+          props.scrollRef.current.scrollTo(0, 0)
+        } else {
+          window.scrollTo(0, 0)
+        }
       }
     })
     return () => {
       unlisten()
     }
-  }, [history])
+  }, [history, props.scrollRef])
 
   return null
 }

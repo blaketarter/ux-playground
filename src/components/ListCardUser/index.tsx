@@ -17,7 +17,7 @@ interface Props {
   }>
   isFetching?: boolean
   onClick?: ComponentProps<typeof CardUser>["onClick"]
-  cardRef?: (user: User) => MutableRefObject<HTMLDivElement | null> | undefined
+  cardRef?: (user: User) => MutableRefObject<HTMLElement | null> | undefined
   style?: CSSProperties
 }
 
