@@ -80,9 +80,12 @@ export const useSharedElement = () => {
       },
     ) => {
       if (state.ghostLayerRef.current) {
+        const scrollElement = state.scrollElementRef?.current
+        const ghostLayer = state.ghostLayerRef.current
+
         const el = sharedElement.cloneNode(true) as HTMLElement
         const boundingRect = sharedElement.getBoundingClientRect()
-        const scrollPosition = state.scrollElementRef.current?.scrollTop
+        const scrollPosition = scrollElement?.scrollTop
 
         el.style.position = "fixed"
         el.style.top = `${boundingRect.top}px`
@@ -94,9 +97,7 @@ export const useSharedElement = () => {
         }ms ease`
         el.style.willChange = "transform, width, height"
 
-        state.sharedElementRef.current = state.ghostLayerRef.current.appendChild(
-          el,
-        )
+        state.sharedElementRef.current = ghostLayer.appendChild(el)
 
         setSharedElementContextState((prevState) => ({
           ...prevState,
@@ -141,28 +142,34 @@ export const SharedElementProvider = ({
       sharedElementRef.current &&
       sharedTargetRef.current
     ) {
-      if (state.restoreScrollPosition && scrollElementRef?.current) {
-        scrollElementRef.current.scrollTo(
+      const scrollElement = scrollElementRef?.current
+      const ghostLayer = ghostLayerRef.current
+      const sharedElement = sharedElementRef.current
+      const sharedTarget = sharedTargetRef.current
+
+      if (state.restoreScrollPosition && scrollElement) {
+        scrollElement.scrollTo(
           0,
-          state.savedScrollPosition ?? sharedTargetRef.current.offsetTop,
+          state.savedScrollPosition ?? sharedTarget.offsetTop,
         )
       }
 
-      const sharedElementRefBoundingBox = sharedElementRef.current.getBoundingClientRect()
-      const sharedTargetRefBoundingBox = sharedTargetRef.current.getBoundingClientRect()
+      const sharedElementBoundingBox = sharedElement.getBoundingClientRect()
+      const sharedTargetBoundingBox = sharedTarget.getBoundingClientRect()
 
-      const verticalTravelDistance =
-        sharedTargetRefBoundingBox.top - sharedElementRefBoundingBox.top + 24
-      const horizontalTravelDistance =
-        sharedTargetRefBoundingBox.left - sharedElementRefBoundingBox.left
-      const height = sharedTargetRefBoundingBox.height
-      const width = sharedTargetRefBoundingBox.width
+      const verticalDelta =
+        sharedTargetBoundingBox.top - sharedElementBoundingBox.top
+      const horizontalDelta =
+        sharedTargetBoundingBox.left - sharedElementBoundingBox.left
+
+      const heightTarget = sharedTargetBoundingBox.height
+      const widthTarget = sharedTargetBoundingBox.width
 
       const cleanup = () => {
-        if (sharedElementRef.current) {
-          ghostLayerRef.current?.childNodes.forEach((child) => {
-            if (child === sharedElementRef.current) {
-              ghostLayerRef.current?.removeChild(child)
+        if (sharedElement) {
+          ghostLayer?.childNodes.forEach((child) => {
+            if (child === sharedElement) {
+              ghostLayer?.removeChild(child)
             }
           })
         }
@@ -176,25 +183,27 @@ export const SharedElementProvider = ({
           restoreScrollPosition: false,
         }))
 
-        ghostLayerRef.current?.removeEventListener("transitionend", cleanup)
-
-        // sharedElementRef.current = null
-        // sharedTargetRef.current = null
+        ghostLayer?.removeEventListener("transitionend", cleanup)
       }
 
-      ghostLayerRef.current.addEventListener("transitionend", cleanup, {
+      ghostLayer.addEventListener("transitionend", cleanup, {
         once: true,
       })
 
       requestAnimationFrame(() => {
-        if (sharedElementRef.current) {
-          sharedElementRef.current.style.transform = `translateY(${verticalTravelDistance}px) translateX(${horizontalTravelDistance}px)`
-          sharedElementRef.current.style.width = `${width}px`
-          sharedElementRef.current.style.height = `${height}px`
+        if (sharedElement) {
+          sharedElement.style.transform = `translateY(${verticalDelta}px) translateX(${horizontalDelta}px)`
+          sharedElement.style.width = `${widthTarget}px`
+          sharedElement.style.height = `${heightTarget}px`
         }
       })
     }
-  })
+  }, [
+    scrollElementRef,
+    state.isAnimating,
+    state.restoreScrollPosition,
+    state.savedScrollPosition,
+  ])
 
   return (
     <SharedElementContext.Provider
@@ -208,7 +217,14 @@ export const SharedElementProvider = ({
       }}
     >
       {children}
-      <div {...ghostLayerProps} ref={ghostLayerRef} />
+      <div
+        {...ghostLayerProps}
+        style={{
+          display: !state.isAnimating ? "none" : undefined,
+          ...ghostLayerProps?.style,
+        }}
+        ref={ghostLayerRef}
+      />
     </SharedElementContext.Provider>
   )
 }
