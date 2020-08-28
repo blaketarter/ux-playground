@@ -19,6 +19,7 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
+  wrapper: {},
   root: {
     display: "flex",
     maxWidth: 1000,
@@ -39,9 +40,7 @@ const useStyles = makeStyles((theme) => ({
     objectFit: "cover",
     background: theme.palette.background.default,
   },
-  code: {
-    // background: theme.palette.grey[100],
-  },
+  code: {},
 }))
 
 export const CardUser = forwardRef(function (
@@ -56,6 +55,7 @@ export const CardUser = forwardRef(function (
       my={3}
       style={style}
       onClick={onClick ? (e) => onClick(e, user) : undefined}
+      className={classes.wrapper}
     >
       <Card elevation={2} className={classes.root}>
         {isSkeleton ? (

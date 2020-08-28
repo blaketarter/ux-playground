@@ -60,6 +60,54 @@ interface Props {
 
 const transitionSpeed = 500
 
+let hackyId = 0
+
+function generateStyleSheet(ghostLayer: HTMLElement, el: HTMLElement) {
+  const rules = copyStyles(el)
+
+  const styleSheet = document.createElement("style")
+  styleSheet.id = `shared-${hackyId}`
+  styleSheet.appendChild(document.createTextNode(""))
+
+  ghostLayer.appendChild(styleSheet)
+
+  rules.forEach((rule) => {
+    styleSheet.sheet?.insertRule("#shared " + rule)
+  })
+
+  el.setAttribute("data-shared", `shared-${hackyId}`)
+
+  hackyId++
+
+  return styleSheet
+}
+
+// https://stackoverflow.com/questions/2952667/find-all-css-rules-that-apply-to-an-element
+function css(el: HTMLElement) {
+  const sheets = document.styleSheets
+  const cssRules = []
+  el.matches = el.matches || el.webkitMatchesSelector
+  for (const i in sheets) {
+    const rules = sheets[i].rules || sheets[i].cssRules
+    for (const r in rules) {
+      if (el.matches((rules[r] as any).selectorText)) {
+        cssRules.unshift(rules[r].cssText)
+      }
+    }
+  }
+  return cssRules
+}
+
+function copyStyles(el: HTMLElement) {
+  let rules = css(el)
+
+  for (let i = 0; i < el.children.length; i++) {
+    rules = rules.concat(copyStyles(el.children[i] as HTMLElement))
+  }
+
+  return rules
+}
+
 // IDEA, give this an ID and a way to register the refs, or even pass the refs in.
 // so maybe we can have an easy way to manage multiple shared element transitions and be able to cleanup better
 // it would probably store the refs in a map of {[id: string]: { trigger: ref, target: ref }}
@@ -84,6 +132,10 @@ export const useSharedElement = () => {
         const ghostLayer = state.ghostLayerRef.current
 
         const el = sharedElement.cloneNode(true) as HTMLElement
+
+        // this is needed for prod so that if a stylesheet is unloaded the copied element has all relevant styles
+        generateStyleSheet(ghostLayer, el)
+
         const boundingRect = sharedElement.getBoundingClientRect()
         const scrollPosition = scrollElement?.scrollTop
 
@@ -170,6 +222,13 @@ export const SharedElementProvider = ({
           ghostLayer?.childNodes.forEach((child) => {
             if (child === sharedElement) {
               ghostLayer?.removeChild(child)
+              const styleSheet = ghostLayer.querySelector(
+                `#${sharedElement.getAttribute("data-shared")}`,
+              )
+
+              if (styleSheet) {
+                ghostLayer?.removeChild(styleSheet)
+              }
             }
           })
         }
@@ -218,6 +277,7 @@ export const SharedElementProvider = ({
     >
       {children}
       <div
+        id="shared"
         {...ghostLayerProps}
         style={{
           display: !state.isAnimating ? "none" : undefined,
