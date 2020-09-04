@@ -24,14 +24,19 @@ export function RouteSharedElementList({ triggerId }: Props) {
       }}
       users={!error && users ? users : []}
       onClick={(e, user) => {
+        const id = user?.id
         e.preventDefault()
-        startAnimation(e.currentTarget, {
-          captureScrollPosition: true,
-        })
-
-        if (user) {
-          history.push(`/shared/${user.id}`)
-        }
+        startAnimation(
+          e.currentTarget,
+          () => {
+            if (id) {
+              history.push(`/shared/${id}`)
+            }
+          },
+          {
+            captureScrollPosition: true,
+          },
+        )
       }}
       cardRef={(user) => (user.id === triggerId ? sharedTargetRef : undefined)}
     />

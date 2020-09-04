@@ -16,6 +16,7 @@ interface SharedElementContextStatePlain {
   sharedElementRef: MutableRefObject<HTMLElement | null>
   sharedTargetRef: MutableRefObject<HTMLElement | null>
   scrollElementRef: MutableRefObject<HTMLElement | null>
+  styleSheetRef: MutableRefObject<HTMLElement | null>
   isAnimating: boolean
   savedScrollPosition: number | null
   restoreScrollPosition: boolean
@@ -41,6 +42,7 @@ const initialSharedElementContextState: SharedElementContextState = {
   sharedElementRef: { current: null },
   sharedTargetRef: { current: null },
   scrollElementRef: { current: null },
+  styleSheetRef: { current: null },
   isAnimating: false,
   savedScrollPosition: null,
   restoreScrollPosition: false,
@@ -60,13 +62,10 @@ interface Props {
 
 const transitionSpeed = 500
 
-let hackyId = 0
-
 function generateStyleSheet(ghostLayer: HTMLElement, el: HTMLElement) {
   const rules = copyStyles(el)
 
   const styleSheet = document.createElement("style")
-  styleSheet.id = `shared-${hackyId}`
   styleSheet.appendChild(document.createTextNode(""))
 
   ghostLayer.appendChild(styleSheet)
@@ -74,10 +73,6 @@ function generateStyleSheet(ghostLayer: HTMLElement, el: HTMLElement) {
   rules.forEach((rule) => {
     styleSheet.sheet?.insertRule("#shared " + rule)
   })
-
-  el.setAttribute("data-shared", `shared-${hackyId}`)
-
-  hackyId++
 
   return styleSheet
 }
@@ -90,9 +85,11 @@ function css(el: HTMLElement) {
   for (const i in sheets) {
     const rules = sheets[i].rules || sheets[i].cssRules
     for (const r in rules) {
-      if (el.matches((rules[r] as any).selectorText)) {
-        cssRules.unshift(rules[r].cssText)
-      }
+      try {
+        if (el.matches((rules[r] as any).selectorText)) {
+          cssRules.unshift(rules[r].cssText)
+        }
+      } catch {}
     }
   }
   return cssRules
@@ -121,6 +118,7 @@ export const useSharedElement = () => {
   const startAnimation = useCallback(
     (
       sharedElement: HTMLElement,
+      cb?: () => unknown,
       options?: {
         restoreScrollPosition?: boolean
         captureScrollPosition?: boolean
@@ -128,16 +126,21 @@ export const useSharedElement = () => {
       },
     ) => {
       if (state.ghostLayerRef.current) {
-        const scrollElement = state.scrollElementRef?.current
+        const scrollElement =
+          state.scrollElementRef?.current ?? document.scrollingElement
         const ghostLayer = state.ghostLayerRef.current
 
         const el = sharedElement.cloneNode(true) as HTMLElement
 
-        // this is needed for prod so that if a stylesheet is unloaded the copied element has all relevant styles
-        generateStyleSheet(ghostLayer, el)
+        const styleSheet = generateStyleSheet(ghostLayer, el)
 
         const boundingRect = sharedElement.getBoundingClientRect()
         const scrollPosition = scrollElement?.scrollTop
+
+        setSharedElementContextState((prevState) => ({
+          ...prevState,
+          isAnimating: true,
+        }))
 
         el.style.position = "fixed"
         el.style.top = `${boundingRect.top}px`
@@ -150,15 +153,18 @@ export const useSharedElement = () => {
         el.style.willChange = "transform, width, height"
 
         state.sharedElementRef.current = ghostLayer.appendChild(el)
+        state.styleSheetRef.current = styleSheet
 
         setSharedElementContextState((prevState) => ({
           ...prevState,
           savedScrollPosition: options?.captureScrollPosition
             ? scrollPosition ?? null
             : prevState.savedScrollPosition,
-          isAnimating: true,
+          // isAnimating: true,
           restoreScrollPosition: options?.restoreScrollPosition ?? false,
         }))
+
+        cb?.()
       }
     },
     [
@@ -166,6 +172,7 @@ export const useSharedElement = () => {
       state.ghostLayerRef,
       state.scrollElementRef,
       state.sharedElementRef,
+      state.styleSheetRef,
     ],
   )
 
@@ -180,6 +187,7 @@ export const SharedElementProvider = ({
   const ghostLayerRef = useRef<HTMLDivElement | null>(null)
   const sharedElementRef = useRef<HTMLElement | null>(null)
   const sharedTargetRef = useRef<HTMLElement | null>(null)
+  const styleSheetRef = useRef<HTMLElement | null>(null)
 
   const [state, setState] = useState<SharedElementContextStateValues>({
     isAnimating: false,
@@ -194,10 +202,12 @@ export const SharedElementProvider = ({
       sharedElementRef.current &&
       sharedTargetRef.current
     ) {
-      const scrollElement = scrollElementRef?.current
+      const scrollElement =
+        scrollElementRef?.current ?? document.scrollingElement
       const ghostLayer = ghostLayerRef.current
       const sharedElement = sharedElementRef.current
       const sharedTarget = sharedTargetRef.current
+      const styleSheet = styleSheetRef.current
 
       if (state.restoreScrollPosition && scrollElement) {
         scrollElement.scrollTo(
@@ -218,20 +228,8 @@ export const SharedElementProvider = ({
       const widthTarget = sharedTargetBoundingBox.width
 
       const cleanup = () => {
-        if (sharedElement) {
-          ghostLayer?.childNodes.forEach((child) => {
-            if (child === sharedElement) {
-              ghostLayer?.removeChild(child)
-              const styleSheet = ghostLayer.querySelector(
-                `#${sharedElement.getAttribute("data-shared")}`,
-              )
-
-              if (styleSheet) {
-                ghostLayer?.removeChild(styleSheet)
-              }
-            }
-          })
-        }
+        sharedElement.remove()
+        styleSheet?.remove()
 
         setState((prevState) => ({
           ...prevState,
@@ -272,6 +270,7 @@ export const SharedElementProvider = ({
         ghostLayerRef,
         sharedElementRef,
         sharedTargetRef,
+        styleSheetRef,
         scrollElementRef: scrollElementRef ?? { current: null },
       }}
     >

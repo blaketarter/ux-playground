@@ -31,12 +31,16 @@ export function RouteSharedElementDetail({ setTriggerId }: Props) {
             setTriggerId?.(Number(match?.params.id))
 
             if (sharedTargetRef.current) {
-              startAnimation(sharedTargetRef.current, {
-                restoreScrollPosition: true,
-              })
+              startAnimation(
+                sharedTargetRef.current,
+                () => {
+                  history.push("/shared")
+                },
+                {
+                  restoreScrollPosition: true,
+                },
+              )
             }
-
-            history.push("/shared")
           }}
         >
           <Button startIcon={<ChevronLeftIcon />}>Back</Button>
