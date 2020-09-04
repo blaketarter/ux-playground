@@ -160,7 +160,6 @@ export const useSharedElement = () => {
           savedScrollPosition: options?.captureScrollPosition
             ? scrollPosition ?? null
             : prevState.savedScrollPosition,
-          // isAnimating: true,
           restoreScrollPosition: options?.restoreScrollPosition ?? false,
         }))
 
