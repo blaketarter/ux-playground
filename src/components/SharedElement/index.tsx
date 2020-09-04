@@ -62,8 +62,12 @@ interface Props {
 
 const transitionSpeed = 500
 
-function generateStyleSheet(ghostLayer: HTMLElement, el: HTMLElement) {
-  const rules = copyStyles(el)
+function generateStyleSheet(
+  ghostLayer: HTMLElement,
+  el: HTMLElement,
+  shallowClone?: boolean,
+) {
+  const rules = copyStyles(el, shallowClone)
 
   const styleSheet = document.createElement("style")
   styleSheet.appendChild(document.createTextNode(""))
@@ -95,11 +99,13 @@ function css(el: HTMLElement) {
   return cssRules
 }
 
-function copyStyles(el: HTMLElement) {
+function copyStyles(el: HTMLElement, shallowClone?: boolean) {
   let rules = css(el)
 
-  for (let i = 0; i < el.children.length; i++) {
-    rules = rules.concat(copyStyles(el.children[i] as HTMLElement))
+  if (!shallowClone) {
+    for (let i = 0; i < el.children.length; i++) {
+      rules = rules.concat(copyStyles(el.children[i] as HTMLElement))
+    }
   }
 
   return rules
@@ -123,6 +129,7 @@ export const useSharedElement = () => {
         restoreScrollPosition?: boolean
         captureScrollPosition?: boolean
         transitionSpeed?: number
+        shallowClone?: boolean
       },
     ) => {
       if (state.ghostLayerRef.current) {
@@ -130,7 +137,9 @@ export const useSharedElement = () => {
           state.scrollElementRef?.current ?? document.scrollingElement
         const ghostLayer = state.ghostLayerRef.current
 
-        const el = sharedElement.cloneNode(true) as HTMLElement
+        const el = sharedElement.cloneNode(
+          options?.shallowClone !== undefined ? !options.shallowClone : true,
+        ) as HTMLElement
 
         const styleSheet = generateStyleSheet(ghostLayer, el)
 
