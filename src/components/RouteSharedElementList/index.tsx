@@ -30,7 +30,7 @@ export function RouteSharedElementList({ triggerId }: Props) {
           e.currentTarget,
           () => {
             if (id) {
-              history.push(`/shared/${id}`)
+              history.push(`/shared/${id}`, user)
             }
           },
           {

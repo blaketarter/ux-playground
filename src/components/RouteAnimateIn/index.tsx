@@ -1,6 +1,7 @@
-import { Fade, makeStyles } from "@material-ui/core"
+import { makeStyles } from "@material-ui/core"
 import React, { ReactElement } from "react"
 import { useQueryUsers } from "../../utils/useQueryUsers"
+import { DelayedFade } from "../DelayedFade"
 import { ListCardUser } from "../ListCardUser"
 
 const useStyles = makeStyles((theme) => ({
@@ -16,9 +17,9 @@ const FadeIn = ({
   children: ReactElement
   index: number
 }) => (
-  <Fade in={true} timeout={300 * (index + 1)}>
+  <DelayedFade in={true} delay={100 * index} timeout={400}>
     {children}
-  </Fade>
+  </DelayedFade>
 )
 
 export default function RouteAnimateIn() {

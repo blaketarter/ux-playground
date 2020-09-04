@@ -6,6 +6,7 @@ const Spinner = lazy(() => import("../RouteSpinner"))
 const Skeleton = lazy(() => import("../RouteSkeleton"))
 const Animate = lazy(() => import("../RouteAnimateIn"))
 const Shared = lazy(() => import("../RouteSharedElement"))
+const Dashboard = lazy(() => import("../RouteDashboard"))
 
 export function Content() {
   return (
@@ -16,6 +17,7 @@ export function Content() {
         <Route path="/skeleton" component={Skeleton} />
         <Route path="/animate" component={Animate} />
         <Route path="/shared" component={Shared} />
+        <Route path="/dashboard" component={Dashboard} />
         <Redirect to="/404" push />
       </Switch>
     </>

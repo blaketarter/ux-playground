@@ -21,8 +21,10 @@ import {
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import DehazeIcon from "@material-ui/icons/Dehaze"
+import FeaturedVideoIcon from "@material-ui/icons/FeaturedVideo"
 import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
 import KitchenIcon from "@material-ui/icons/Kitchen"
+import LineStyleIcon from "@material-ui/icons/LineStyle"
 import MenuIcon from "@material-ui/icons/Menu"
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 import RefreshIcon from "@material-ui/icons/Refresh"
@@ -165,7 +167,7 @@ export function Navigation() {
           activeClassName="Mui-selected"
         >
           <ListItemIcon>
-            <DashboardIcon />
+            <LineStyleIcon />
           </ListItemIcon>
           <ListItemText primary="Skeleton Content" />
         </ListItem>
@@ -194,6 +196,26 @@ export function Navigation() {
             <FlipToFrontIcon />
           </ListItemIcon>
           <ListItemText primary="Shared Element Transition" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          to="/dashboard"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Dashboard Fade In" />
+        </ListItem>
+        <ListItem
+          component={NavLink}
+          to="/picture-in-picture"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
+            <FeaturedVideoIcon />
+          </ListItemIcon>
+          <ListItemText primary="Picture in Picture" />
         </ListItem>
       </List>
     </div>

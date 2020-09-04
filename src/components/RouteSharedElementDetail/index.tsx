@@ -2,6 +2,7 @@ import { Box, Button } from "@material-ui/core"
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
 import React from "react"
 import { Link, useHistory, useRouteMatch } from "react-router-dom"
+import { User } from "../../types/User"
 import { useQueryUsers } from "../../utils/useQueryUsers"
 import { CardUser } from "../CardUser"
 import { DelayedLoader } from "../DelayedLoader"
@@ -20,6 +21,10 @@ export function RouteSharedElementDetail({ setTriggerId }: Props) {
     { sharedTargetRef, isAnimating },
     { startAnimation },
   ] = useSharedElement()
+
+  const userState = history.location.state as User
+  const isUserStateMatch =
+    userState && userState?.id === Number(match?.params?.id)
 
   return (
     <>
@@ -46,13 +51,16 @@ export function RouteSharedElementDetail({ setTriggerId }: Props) {
           <Button startIcon={<ChevronLeftIcon />}>Back</Button>
         </Link>
       </Box>
-      {!error && !isFetching ? (
+      {isUserStateMatch || (!error && !isFetching) ? (
         <CardUser
           ref={sharedTargetRef}
           style={{
             opacity: isAnimating ? 0 : 1,
           }}
-          user={users?.find((user) => user.id === Number(match?.params.id))}
+          user={
+            users?.find((user) => user.id === Number(match?.params.id)) ??
+            userState
+          }
           expanded={true}
         />
       ) : (
