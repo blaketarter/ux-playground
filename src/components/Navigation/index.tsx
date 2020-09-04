@@ -22,6 +22,7 @@ import {
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import DehazeIcon from "@material-ui/icons/Dehaze"
 import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
+import KitchenIcon from "@material-ui/icons/Kitchen"
 import MenuIcon from "@material-ui/icons/Menu"
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked"
 import RefreshIcon from "@material-ui/icons/Refresh"
@@ -129,6 +130,19 @@ export function Navigation() {
           </Select>
         </Box>
       </div>
+      <List>
+        <ListItem
+          component={NavLink}
+          exact
+          to="/"
+          activeClassName="Mui-selected"
+        >
+          <ListItemIcon>
+            <KitchenIcon />
+          </ListItemIcon>
+          <ListItemText primary="Kitchen Sink" />
+        </ListItem>
+      </List>
       <Divider />
       <List>
         <Typography variant="subtitle2" className={classes.subtitle}>
@@ -137,7 +151,7 @@ export function Navigation() {
         <ListItem
           component={NavLink}
           exact
-          to="/"
+          to="/spinner"
           activeClassName="Mui-selected"
         >
           <ListItemIcon>
