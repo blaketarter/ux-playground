@@ -21,8 +21,9 @@ import {
 } from "@material-ui/core"
 import DashboardIcon from "@material-ui/icons/Dashboard"
 import DehazeIcon from "@material-ui/icons/Dehaze"
-import FeaturedVideoIcon from "@material-ui/icons/FeaturedVideo"
+// import FeaturedVideoIcon from "@material-ui/icons/FeaturedVideo"
 import FlipToFrontIcon from "@material-ui/icons/FlipToFront"
+import HeightIcon from "@material-ui/icons/Height"
 import KitchenIcon from "@material-ui/icons/Kitchen"
 import LineStyleIcon from "@material-ui/icons/LineStyle"
 import MenuIcon from "@material-ui/icons/Menu"
@@ -209,13 +210,13 @@ export function Navigation() {
         </ListItem>
         <ListItem
           component={NavLink}
-          to="/picture-in-picture"
+          to="/scroll"
           activeClassName="Mui-selected"
         >
           <ListItemIcon>
-            <FeaturedVideoIcon />
+            <HeightIcon />
           </ListItemIcon>
-          <ListItemText primary="Picture in Picture" />
+          <ListItemText primary="Animate After Scroll" />
         </ListItem>
       </List>
     </div>

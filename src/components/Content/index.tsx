@@ -7,6 +7,7 @@ const Skeleton = lazy(() => import("../RouteSkeleton"))
 const Animate = lazy(() => import("../RouteAnimateIn"))
 const Shared = lazy(() => import("../RouteSharedElement"))
 const Dashboard = lazy(() => import("../RouteDashboard"))
+const Scroll = lazy(() => import("../RouteAnimateAfterScroll"))
 
 export function Content() {
   return (
@@ -18,6 +19,7 @@ export function Content() {
         <Route path="/animate" component={Animate} />
         <Route path="/shared" component={Shared} />
         <Route path="/dashboard" component={Dashboard} />
+        <Route path="/scroll" component={Scroll} />
         <Redirect to="/404" push />
       </Switch>
     </>
