@@ -251,7 +251,7 @@ export function Navigation() {
                   queryCache.invalidateQueries(true)
                 }}
               >
-                Refresh
+                Refresh Data
               </Button>
             </Box>
           </Box>

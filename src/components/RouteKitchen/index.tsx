@@ -1,5 +1,6 @@
 import { Typography, makeStyles } from "@material-ui/core"
 import React, { useState } from "react"
+import { ButtonHoldToConfirm } from "../ButtonHoldToConfirm"
 import { ButtonLoader } from "../ButtonLoader"
 
 const useStyles = makeStyles((theme) => ({
@@ -13,6 +14,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "flex-start",
     marginBottom: theme.spacing(2),
   },
+  inline: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
 }))
 
 export default function RouteKitchen() {
@@ -22,6 +28,10 @@ export default function RouteKitchen() {
   const [buttonLoading2Success, setButtonLoading2Success] = useState(false)
   const [buttonLoading3, setButtonLoading3] = useState(false)
   const [buttonLoading3Error, setButtonLoading3Error] = useState(false)
+  const [
+    isButtonHoldToConfirmConfirmed,
+    setIsButtonHoldToConfirmConfirmed,
+  ] = useState(false)
 
   return (
     <div className={classes.root}>
@@ -75,6 +85,29 @@ export default function RouteKitchen() {
         >
           Click Me
         </ButtonLoader>
+      </label>
+      <label className={classes.label}>
+        <Typography variant="subtitle2">Hold to confirm</Typography>
+        <div className={classes.inline}>
+          <ButtonHoldToConfirm
+            variant="contained"
+            confirmMS={1000}
+            resetAfterConfirm={false}
+            confirmAfterMouseUp={false}
+            onConfirm={() => setIsButtonHoldToConfirmConfirmed(true)}
+          >
+            Send Email
+          </ButtonHoldToConfirm>
+          {isButtonHoldToConfirmConfirmed ? (
+            <Typography
+              color="textSecondary"
+              variant="subtitle2"
+              style={{ marginLeft: 10 }}
+            >
+              Confirmed
+            </Typography>
+          ) : null}
+        </div>
       </label>
     </div>
   )
