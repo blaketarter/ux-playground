@@ -90,7 +90,7 @@ function css(el: HTMLElement) {
     const rules = sheets[i].rules || sheets[i].cssRules
     for (const r in rules) {
       try {
-        if (el.matches((rules[r] as any).selectorText)) {
+        if (el.matches((rules[r] as CSSStyleRule).selectorText)) {
           cssRules.unshift(rules[r].cssText)
         }
       } catch {}
@@ -283,6 +283,9 @@ export const SharedElementProvider = ({
       }}
     >
       {children}
+      {
+        // add the option to provide a ghost layer ref instead of having it automatically created here?
+      }
       <div
         id="shared"
         {...ghostLayerProps}

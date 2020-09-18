@@ -51,7 +51,7 @@ export const CardUser = forwardRef(function (
 
   return (
     <Box
-      {...({ ref } as any)}
+      {...({ ref } as unknown)}
       my={3}
       style={style}
       onClick={onClick ? (e) => onClick(e, user) : undefined}

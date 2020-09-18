@@ -9,6 +9,29 @@ type Props = {
   startVisible?: boolean
   animateExit?: boolean
 }
+
+function getAnimationDirection(
+  scrollDir: "up" | "down",
+  showComp: boolean,
+): "up" | "down" {
+  switch (scrollDir) {
+    case "up": {
+      if (showComp) {
+        return "down"
+      }
+
+      return "up"
+    }
+    case "down": {
+      if (showComp) {
+        return "up"
+      }
+
+      return "down"
+    }
+  }
+}
+
 export function FadeAfterScroll({
   children,
   height,
@@ -75,7 +98,9 @@ export function FadeAfterScroll({
         observer.unobserve(target)
       }
     }
-  }, [setScrollDir, showComp])
+  }, [animateExit, setScrollDir, showComp])
+
+  const direction = getAnimationDirection(scrollDir ?? "up", showComp)
 
   return (
     <div ref={targetRef} style={{ minHeight: height }}>
@@ -87,17 +112,7 @@ export function FadeAfterScroll({
         <div>
           <DelayedSlide
             in={showComp}
-            direction={
-              showComp && scrollDir === "up"
-                ? "down"
-                : !showComp && scrollDir === "down"
-                ? "down"
-                : showComp && scrollDir === "down"
-                ? "up"
-                : !showComp && scrollDir === "up"
-                ? "up"
-                : "up"
-            }
+            direction={direction}
             timeout={startVisible && !hasMounted.current ? 0 : timeout}
             unmountOnExit={false}
           >
