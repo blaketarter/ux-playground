@@ -95,6 +95,11 @@ export default function RouteKitchen() {
             resetAfterConfirm={false}
             confirmAfterMouseUp={false}
             onConfirm={() => setIsButtonHoldToConfirmConfirmed(true)}
+            onMouseDown={() => {
+              if (isButtonHoldToConfirmConfirmed) {
+                setIsButtonHoldToConfirmConfirmed(false)
+              }
+            }}
           >
             Send Email
           </ButtonHoldToConfirm>

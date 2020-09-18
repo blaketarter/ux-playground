@@ -1,6 +1,7 @@
 import { Button, makeStyles } from "@material-ui/core"
 import React, {
   ComponentProps,
+  MouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -38,6 +39,7 @@ export function ButtonHoldToConfirm({
   onConfirm,
   resetAfterConfirm,
   confirmAfterMouseUp,
+  onMouseDown: onMouseDownProp,
   ...props
 }: Props) {
   const classes = useStyles()
@@ -147,21 +149,33 @@ export function ButtonHoldToConfirm({
     stopProgress,
   ])
 
-  const onMouseDown = useCallback(() => {
-    setConfirmed(false)
-    setIsHolding(true)
-    const startTimestamp = performance.now()
+  const onMouseDown = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      if (onMouseDownProp) {
+        onMouseDownProp(e)
+      }
 
-    if (progressRef.current) {
-      progressRef.current.style.willChange = "height"
-    }
+      setConfirmed(false)
+      setIsHolding(true)
 
-    document.addEventListener("mouseup", onMouseUp)
+      if (animationId.current) {
+        cancelAnimationFrame(animationId.current)
+      }
 
-    animationId.current = requestAnimationFrame((timestamp) =>
-      animateProgressForward(startTimestamp, timestamp),
-    )
-  }, [animateProgressForward, onMouseUp])
+      const startTimestamp = performance.now()
+
+      if (progressRef.current) {
+        progressRef.current.style.willChange = "height"
+      }
+
+      document.addEventListener("mouseup", onMouseUp)
+
+      animationId.current = requestAnimationFrame((timestamp) =>
+        animateProgressForward(startTimestamp, timestamp),
+      )
+    },
+    [animateProgressForward, onMouseUp, onMouseDownProp],
+  )
 
   useEffect(() => {
     if (isHolding) {
@@ -184,8 +198,8 @@ export function ButtonHoldToConfirm({
     <Button
       className={classes.button}
       disableRipple
-      onMouseDown={onMouseDown}
       {...props}
+      onMouseDown={onMouseDown}
     >
       <div ref={progressRef} className={classes.progress} />
       <div className={classes.children}>{children}</div>
