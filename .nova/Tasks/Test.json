@@ -1,0 +1,9 @@
+{
+  "actions" : {
+    "run" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/sh\n\nnpm run test:ci"
+    }
+  },
+  "identifier" : "5069DEC6-B278-4558-BB28-6FE56CB9E8C5"
+}

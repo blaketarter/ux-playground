@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const queryConfig: ReactQueryProviderConfig = {
-  queries: { refetchOnWindowFocus: false },
+  queries: { refetchOnWindowFocus: true },
 }
 
 export function App() {

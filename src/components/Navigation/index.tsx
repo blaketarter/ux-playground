@@ -39,6 +39,7 @@ import {
 
 type StyleProps = {
   drawerWidth: number
+  isDragging: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -86,12 +87,14 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     bottom: 0,
     right: 0,
-    width: "9px",
-    background: theme.palette.grey[200],
+    width: ({ isDragging }: StyleProps) => (isDragging ? 9 : 4),
+    background: ({ isDragging }: StyleProps) =>
+      isDragging ? theme.palette.grey[300] : theme.palette.grey[200],
     cursor: "ew-resize",
     transition: "200ms ease",
     "&:hover": {
       background: theme.palette.grey[300],
+      width: 9,
     },
     "&:after": {
       content: "''",
@@ -126,7 +129,8 @@ export function Navigation() {
   const [drawerWidth, setDrawerWidth] = useState(
     parseInt(localStorage.getItem("drawerWidth") ?? "240"),
   )
-  const classes = useStyles({ drawerWidth })
+  const [isDragging, setIsDragging] = useState(false)
+  const classes = useStyles({ drawerWidth, isDragging })
 
   const drawer = useMemo(
     () => (
@@ -279,6 +283,7 @@ export function Navigation() {
 
   const onMouseUp = useCallback(
     (e: MouseEvent) => {
+      setIsDragging(false)
       localStorage.setItem("drawerWidth", `${calculateDrawerWidth(e.pageX)}`)
       document.removeEventListener("mousemove", updateDrawerWidth)
       document.removeEventListener("mouseup", onMouseUp)
@@ -352,6 +357,7 @@ export function Navigation() {
                 if (e.button === 0) {
                   e.preventDefault()
                   e.stopPropagation()
+                  setIsDragging(true)
                   document.addEventListener("mousemove", updateDrawerWidth)
                   document.addEventListener("mouseup", onMouseUp)
                 }

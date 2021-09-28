@@ -1,0 +1,4 @@
+{
+  "prettier.format-on-save" : false,
+  "workspace.preview_url" : "http:\/\/localhost:3000"
+}
